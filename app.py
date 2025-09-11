@@ -50,30 +50,57 @@ def user_report():
 
 user_data = user_report()
 
-# Model tuning options - simplified wording
+# Model tuning options - easy mode
 if model_choice == "Logistic Regression":
-    complexity = st.sidebar.slider("Model Complexity (lower = simpler, higher = more flexible)", 1, 10, 5)
-    training_time = st.sidebar.slider("Training Effort (more effort = better fit)", 100, 500, 200)
-    model = LogisticRegression(C=complexity, max_iter=training_time)
+    option = st.sidebar.selectbox("Model Style", 
+                                  ["Simple", "Balanced", "Flexible"])
+    if option == "Simple":
+        model = LogisticRegression(C=0.5, max_iter=100)
+    elif option == "Balanced":
+        model = LogisticRegression(C=1.0, max_iter=200)
+    else:  # Flexible
+        model = LogisticRegression(C=2.0, max_iter=300)
 
 elif model_choice == "Decision Tree":
-    depth = st.sidebar.slider("Tree Depth (how detailed the tree is)", 1, 20, 5)
-    min_samples = st.sidebar.slider("Minimum Samples to Split (higher = simpler tree)", 2, 20, 2)
-    model = DecisionTreeClassifier(max_depth=depth, min_samples_split=min_samples)
+    option = st.sidebar.selectbox("Tree Style", 
+                                  ["Shallow", "Medium", "Deep"])
+    if option == "Shallow":
+        model = DecisionTreeClassifier(max_depth=3)
+    elif option == "Medium":
+        model = DecisionTreeClassifier(max_depth=6)
+    else:  # Deep
+        model = DecisionTreeClassifier(max_depth=None)  # grow fully
 
 elif model_choice == "Random Forest":
-    trees = st.sidebar.slider("Number of Trees (more trees = more stable)", 10, 300, 100)
-    depth = st.sidebar.slider("Tree Depth (how detailed the forest trees are)", 1, 20, 5)
-    model = RandomForestClassifier(n_estimators=trees, max_depth=depth)
+    option = st.sidebar.selectbox("Forest Style", 
+                                  ["Small", "Standard", "Large"])
+    if option == "Small":
+        model = RandomForestClassifier(n_estimators=50, max_depth=5)
+    elif option == "Standard":
+        model = RandomForestClassifier(n_estimators=100, max_depth=10)
+    else:  # Large
+        model = RandomForestClassifier(n_estimators=200, max_depth=15)
 
 elif model_choice == "SVM":
-    flexibility = st.sidebar.slider("Model Flexibility (low = strict, high = flexible)", 1, 10, 5)
-    kernel = st.sidebar.selectbox("Type of Decision Boundary", ("linear", "rbf", "poly", "sigmoid"))
-    model = SVC(C=flexibility, kernel=kernel)
+    option = st.sidebar.selectbox("SVM Style", 
+                                  ["Strict", "Balanced", "Flexible"])
+    if option == "Strict":
+        model = SVC(C=0.5, kernel="linear")
+    elif option == "Balanced":
+        model = SVC(C=1.0, kernel="rbf")
+    else:  # Flexible
+        model = SVC(C=2.0, kernel="poly")
 
 elif model_choice == "KNN":
-    neighbors = st.sidebar.slider("Number of Neighbors (lower = sensitive, higher = smoother)", 1, 20, 5)
-    model = KNeighborsClassifier(n_neighbors=neighbors)
+    option = st.sidebar.selectbox("KNN Style", 
+                                  ["Very Sensitive", "Moderate", "Smooth"])
+    if option == "Very Sensitive":
+        model = KNeighborsClassifier(n_neighbors=3)
+    elif option == "Moderate":
+        model = KNeighborsClassifier(n_neighbors=7)
+    else:  # Smooth
+        model = KNeighborsClassifier(n_neighbors=12)
+
 
 
 
@@ -91,6 +118,7 @@ if user_result[0] == 0:
     st.success('You Are Healthy ✅')
 else:
     st.error('You Are Not Healthy ⚠️')
+
 
 
 
