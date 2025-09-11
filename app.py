@@ -50,36 +50,31 @@ def user_report():
 
 user_data = user_report()
 
-# Model selection
-model_choice = st.sidebar.selectbox(
-    "Choose Classifier",
-    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
-)
-
-# Model tuning options
+# Model tuning options - simplified wording
 if model_choice == "Logistic Regression":
-    C = st.sidebar.slider("Regularization (C)", 0.01, 10.0, 1.0)
-    max_iter = st.sidebar.slider("Max Iterations", 100, 500, 200)
-    model = LogisticRegression(C=C, max_iter=max_iter)
+    complexity = st.sidebar.slider("Model Complexity (lower = simpler, higher = more flexible)", 1, 10, 5)
+    training_time = st.sidebar.slider("Training Effort (more effort = better fit)", 100, 500, 200)
+    model = LogisticRegression(C=complexity, max_iter=training_time)
 
 elif model_choice == "Decision Tree":
-    max_depth = st.sidebar.slider("Max Depth", 1, 20, 5)
-    min_samples_split = st.sidebar.slider("Min Samples Split", 2, 20, 2)
-    model = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split)
+    depth = st.sidebar.slider("Tree Depth (how detailed the tree is)", 1, 20, 5)
+    min_samples = st.sidebar.slider("Minimum Samples to Split (higher = simpler tree)", 2, 20, 2)
+    model = DecisionTreeClassifier(max_depth=depth, min_samples_split=min_samples)
 
 elif model_choice == "Random Forest":
-    n_estimators = st.sidebar.slider("Number of Trees", 10, 300, 100)
-    max_depth = st.sidebar.slider("Max Depth", 1, 20, 5)
-    model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
+    trees = st.sidebar.slider("Number of Trees (more trees = more stable)", 10, 300, 100)
+    depth = st.sidebar.slider("Tree Depth (how detailed the forest trees are)", 1, 20, 5)
+    model = RandomForestClassifier(n_estimators=trees, max_depth=depth)
 
 elif model_choice == "SVM":
-    C = st.sidebar.slider("Regularization (C)", 0.01, 10.0, 1.0)
-    kernel = st.sidebar.selectbox("Kernel", ("linear", "rbf", "poly", "sigmoid"))
-    model = SVC(C=C, kernel=kernel)
+    flexibility = st.sidebar.slider("Model Flexibility (low = strict, high = flexible)", 1, 10, 5)
+    kernel = st.sidebar.selectbox("Type of Decision Boundary", ("linear", "rbf", "poly", "sigmoid"))
+    model = SVC(C=flexibility, kernel=kernel)
 
 elif model_choice == "KNN":
-    n_neighbors = st.sidebar.slider("Number of Neighbors (K)", 1, 20, 5)
-    model = KNeighborsClassifier(n_neighbors=n_neighbors)
+    neighbors = st.sidebar.slider("Number of Neighbors (lower = sensitive, higher = smoother)", 1, 20, 5)
+    model = KNeighborsClassifier(n_neighbors=neighbors)
+
 
 
 # Train & Predict
@@ -96,6 +91,7 @@ if user_result[0] == 0:
     st.success('You Are Healthy ✅')
 else:
     st.error('You Are Not Healthy ⚠️')
+
 
 
 
