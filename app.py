@@ -16,8 +16,17 @@ st.title('Diabetes Checkup')
 st.subheader('Training Data')
 st.write(df.describe())
 
-st.subheader('Visualisation')
-st.bar_chart(df)
+st.subheader("Visualisation with Your Data")
+
+df_vis = df.copy()
+df_vis["Label"] = "Dataset"
+user_data["Label"] = "You"
+
+df_plot = pd.concat([df_vis, user_data])
+df_plot = df_plot.set_index("Label")
+
+st.bar_chart(df_plot.drop("Outcome", axis=1).T)
+
 
 # Split
 x = df.drop(['Outcome'], axis=1)
@@ -115,6 +124,7 @@ if user_result[0] == 0:
     st.success('You Are Healthy ✅')
 else:
     st.error('You Are Not Healthy ⚠️')
+
 
 
 
