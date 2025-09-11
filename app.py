@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -50,10 +49,15 @@ def user_report():
 
 user_data = user_report()
 
-# Model tuning options - easy mode
+# Model selection (must come before tuning)
+model_choice = st.sidebar.selectbox(
+    "Choose Classifier",
+    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
+)
+
+# Beginner-friendly tuning options
 if model_choice == "Logistic Regression":
-    option = st.sidebar.selectbox("Model Style", 
-                                  ["Simple", "Balanced", "Flexible"])
+    option = st.sidebar.selectbox("Model Style", ["Simple", "Balanced", "Flexible"])
     if option == "Simple":
         model = LogisticRegression(C=0.5, max_iter=100)
     elif option == "Balanced":
@@ -62,8 +66,7 @@ if model_choice == "Logistic Regression":
         model = LogisticRegression(C=2.0, max_iter=300)
 
 elif model_choice == "Decision Tree":
-    option = st.sidebar.selectbox("Tree Style", 
-                                  ["Shallow", "Medium", "Deep"])
+    option = st.sidebar.selectbox("Tree Style", ["Shallow", "Medium", "Deep"])
     if option == "Shallow":
         model = DecisionTreeClassifier(max_depth=3)
     elif option == "Medium":
@@ -72,8 +75,7 @@ elif model_choice == "Decision Tree":
         model = DecisionTreeClassifier(max_depth=None)  # grow fully
 
 elif model_choice == "Random Forest":
-    option = st.sidebar.selectbox("Forest Style", 
-                                  ["Small", "Standard", "Large"])
+    option = st.sidebar.selectbox("Forest Style", ["Small", "Standard", "Large"])
     if option == "Small":
         model = RandomForestClassifier(n_estimators=50, max_depth=5)
     elif option == "Standard":
@@ -82,8 +84,7 @@ elif model_choice == "Random Forest":
         model = RandomForestClassifier(n_estimators=200, max_depth=15)
 
 elif model_choice == "SVM":
-    option = st.sidebar.selectbox("SVM Style", 
-                                  ["Strict", "Balanced", "Flexible"])
+    option = st.sidebar.selectbox("SVM Style", ["Strict", "Balanced", "Flexible"])
     if option == "Strict":
         model = SVC(C=0.5, kernel="linear")
     elif option == "Balanced":
@@ -92,17 +93,13 @@ elif model_choice == "SVM":
         model = SVC(C=2.0, kernel="poly")
 
 elif model_choice == "KNN":
-    option = st.sidebar.selectbox("KNN Style", 
-                                  ["Very Sensitive", "Moderate", "Smooth"])
+    option = st.sidebar.selectbox("KNN Style", ["Very Sensitive", "Moderate", "Smooth"])
     if option == "Very Sensitive":
         model = KNeighborsClassifier(n_neighbors=3)
     elif option == "Moderate":
         model = KNeighborsClassifier(n_neighbors=7)
     else:  # Smooth
         model = KNeighborsClassifier(n_neighbors=12)
-
-
-
 
 # Train & Predict
 model.fit(x_train, y_train)
@@ -118,6 +115,7 @@ if user_result[0] == 0:
     st.success('You Are Healthy ✅')
 else:
     st.error('You Are Not Healthy ⚠️')
+
 
 
 
