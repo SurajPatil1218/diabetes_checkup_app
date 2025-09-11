@@ -16,18 +16,6 @@ st.title('Diabetes Checkup')
 st.subheader('Training Data')
 st.write(df.describe())
 
-st.subheader("Visualisation with Your Data")
-
-df_vis = df.copy()
-df_vis["Label"] = "Dataset"
-user_data["Label"] = "You"
-
-df_plot = pd.concat([df_vis, user_data])
-df_plot = df_plot.set_index("Label")
-
-st.bar_chart(df_plot.drop("Outcome", axis=1).T)
-
-
 # Split
 x = df.drop(['Outcome'], axis=1)
 y = df.iloc[:, -1]
@@ -56,9 +44,22 @@ def user_report():
     }
     return pd.DataFrame(user_report, index=[0])
 
+# ✅ Create user_data first
 user_data = user_report()
 
-# Model selection (must come before tuning)
+# --- Dynamic Visualization (Dataset vs Your Input) ---
+st.subheader("Visualisation (Dataset Average vs Your Data)")
+
+avg_data = pd.DataFrame(df.drop("Outcome", axis=1).mean()).T
+avg_data["Label"] = "Average"
+user_data["Label"] = "You"
+
+compare_df = pd.concat([avg_data, user_data])
+compare_df = compare_df.set_index("Label")
+
+st.bar_chart(compare_df.T)
+
+# Model selection
 model_choice = st.sidebar.selectbox(
     "Choose Classifier",
     ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
@@ -81,7 +82,7 @@ elif model_choice == "Decision Tree":
     elif option == "Medium":
         model = DecisionTreeClassifier(max_depth=6)
     else:  # Deep
-        model = DecisionTreeClassifier(max_depth=None)  # grow fully
+        model = DecisionTreeClassifier(max_depth=None)
 
 elif model_choice == "Random Forest":
     option = st.sidebar.selectbox("Forest Style", ["Small", "Standard", "Large"])
@@ -124,6 +125,7 @@ if user_result[0] == 0:
     st.success('You Are Healthy ✅')
 else:
     st.error('You Are Not Healthy ⚠️')
+
 
 
 
