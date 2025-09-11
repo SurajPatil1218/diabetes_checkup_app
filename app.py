@@ -56,17 +56,31 @@ model_choice = st.sidebar.selectbox(
     ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
 )
 
-# Initialize model
+# Model tuning options
 if model_choice == "Logistic Regression":
-    model = LogisticRegression(max_iter=200)
+    C = st.sidebar.slider("Regularization (C)", 0.01, 10.0, 1.0)
+    max_iter = st.sidebar.slider("Max Iterations", 100, 500, 200)
+    model = LogisticRegression(C=C, max_iter=max_iter)
+
 elif model_choice == "Decision Tree":
-    model = DecisionTreeClassifier()
+    max_depth = st.sidebar.slider("Max Depth", 1, 20, 5)
+    min_samples_split = st.sidebar.slider("Min Samples Split", 2, 20, 2)
+    model = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split)
+
 elif model_choice == "Random Forest":
-    model = RandomForestClassifier()
+    n_estimators = st.sidebar.slider("Number of Trees", 10, 300, 100)
+    max_depth = st.sidebar.slider("Max Depth", 1, 20, 5)
+    model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
+
 elif model_choice == "SVM":
-    model = SVC()
+    C = st.sidebar.slider("Regularization (C)", 0.01, 10.0, 1.0)
+    kernel = st.sidebar.selectbox("Kernel", ("linear", "rbf", "poly", "sigmoid"))
+    model = SVC(C=C, kernel=kernel)
+
 elif model_choice == "KNN":
-    model = KNeighborsClassifier()
+    n_neighbors = st.sidebar.slider("Number of Neighbors (K)", 1, 20, 5)
+    model = KNeighborsClassifier(n_neighbors=n_neighbors)
+
 
 # Train & Predict
 model.fit(x_train, y_train)
@@ -82,5 +96,6 @@ if user_result[0] == 0:
     st.success('You Are Healthy ✅')
 else:
     st.error('You Are Not Healthy ⚠️')
+
 
 
