@@ -44,7 +44,7 @@ def user_report():
     }
     return pd.DataFrame(user_report, index=[0])
 
-# ✅ Create user_data first
+# ✅ Create user_data for prediction
 user_data = user_report()
 
 # --- Dynamic Visualization (Dataset vs Your Input) ---
@@ -52,9 +52,11 @@ st.subheader("Visualisation (Dataset Average vs Your Data)")
 
 avg_data = pd.DataFrame(df.drop("Outcome", axis=1).mean()).T
 avg_data["Label"] = "Average"
-user_data["Label"] = "You"
 
-compare_df = pd.concat([avg_data, user_data])
+user_data_vis = user_data.copy()   # safe copy for charts
+user_data_vis["Label"] = "You"
+
+compare_df = pd.concat([avg_data, user_data_vis])
 compare_df = compare_df.set_index("Label")
 
 st.bar_chart(compare_df.T)
@@ -125,6 +127,8 @@ if user_result[0] == 0:
     st.success('You Are Healthy ✅')
 else:
     st.error('You Are Not Healthy ⚠️')
+
+
 
 
 
