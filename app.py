@@ -124,9 +124,20 @@ accuracy = accuracy_score(y_test, model.predict(x_test))
 col1, col2, col3 = st.columns(3)
 col1.metric("Model Accuracy", f"{accuracy*100:.2f}%")
 
-# 🔹 Classification Report
+from sklearn.metrics import classification_report
+
 st.subheader("Classification Report")
-st.text(classification_report(y_test, model.predict(x_test)))
+
+# Generate classification report as a dict
+report = classification_report(y_test, model.predict(x_test), output_dict=True)
+
+# Convert to DataFrame
+report_df = pd.DataFrame(report).transpose()
+
+# Show as a nice table
+st.dataframe(report_df.style.background_gradient(cmap="Blues").format(precision=2))
+
+
 
 
 # 🔹 Personalized Health Insights
@@ -162,6 +173,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
