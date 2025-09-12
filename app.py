@@ -123,28 +123,10 @@ accuracy = accuracy_score(y_test, model.predict(x_test))
 # 🔹 Show Metrics Dashboard
 col1, col2, col3 = st.columns(3)
 col1.metric("Model Accuracy", f"{accuracy*100:.2f}%")
-col2.metric("Your Glucose", user_data["Glucose"][0])
-col3.metric("Your BMI", user_data["BMI"][0])
-
 
 # 🔹 Classification Report
 st.subheader("Classification Report")
 st.text(classification_report(y_test, model.predict(x_test)))
-
-# 🔹 ROC Curve
-if hasattr(model, "predict_proba"):
-    y_pred_prob = model.predict_proba(x_test)[:, 1]
-    fpr, tpr, _ = roc_curve(y_test, y_pred_prob)
-    roc_auc = auc(fpr, tpr)
-
-    st.subheader("ROC Curve")
-    fig, ax = plt.subplots()
-    ax.plot(fpr, tpr, label=f"AUC = {roc_auc:.2f}")
-    ax.plot([0, 1], [0, 1], 'r--')
-    ax.set_xlabel("False Positive Rate")
-    ax.set_ylabel("True Positive Rate")
-    ax.legend()
-    st.pyplot(fig)
 
 # 🔹 Feature Importance (for tree-based models)
 if hasattr(model, "feature_importances_"):
@@ -188,6 +170,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
