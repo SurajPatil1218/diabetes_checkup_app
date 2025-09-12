@@ -135,7 +135,7 @@ report = classification_report(y_test, model.predict(x_test), output_dict=True)
 report_df = pd.DataFrame(report).transpose()
 
 # Show as a nice table
-st.dataframe(report_df.style.background_gradient(cmap="white").format(precision=2))
+st.dataframe(report_df.style.background_gradient(cmap="coolwarm").format(precision=2))
 
 
 
@@ -173,6 +173,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
