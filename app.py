@@ -14,9 +14,9 @@ import io
 # Load Data
 df = pd.read_csv("diabetes.csv")
 
-st.title('Diabetes Checkup')
+st.title('🩺 Diabetes Checkup')
 
-st.subheader('Training Data')
+st.subheader('Training Data Overview')
 st.write(df.describe())
 
 # Split
@@ -26,14 +26,14 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 
 # Sidebar sliders for user input
 def user_report():
-    pregnancies = st.sidebar.slider('Pregnancies', 0, 17, 3)
-    glucose = st.sidebar.slider('Glucose', 0, 200, 120)
-    bp = st.sidebar.slider('Blood Pressure', 0, 122, 70)
-    skinthickness = st.sidebar.slider('Skin Thickness', 0, 100, 20)
-    insulin = st.sidebar.slider('Insulin', 0, 846, 79)
-    bmi = st.sidebar.slider('BMI', 0, 67, 20)
-    dpf = st.sidebar.slider('Diabetes Pedigree Function', 0.0, 2.4, 0.47)
-    age = st.sidebar.slider('Age', 21, 88, 33)
+    pregnancies = st.sidebar.slider('Pregnancies', 0, 17, 3, key="preg")
+    glucose = st.sidebar.slider('Glucose', 0, 200, 120, key="gluc")
+    bp = st.sidebar.slider('Blood Pressure', 0, 122, 70, key="bp")
+    skinthickness = st.sidebar.slider('Skin Thickness', 0, 100, 20, key="skin")
+    insulin = st.sidebar.slider('Insulin', 0, 846, 79, key="insulin")
+    bmi = st.sidebar.slider('BMI', 0, 67, 20, key="bmi")
+    dpf = st.sidebar.slider('Diabetes Pedigree Function', 0.0, 2.4, 0.47, key="dpf")
+    age = st.sidebar.slider('Age', 21, 88, 33, key="age")
 
     user_report = {
         'Pregnancies': [pregnancies],
@@ -51,7 +51,7 @@ def user_report():
 user_data = user_report()
 
 # --- Dynamic Visualization (Dataset vs Your Input) ---
-st.subheader("Visualisation (Dataset Average vs Your Data)")
+st.subheader("📊 Dataset Average vs Your Data")
 
 avg_data = pd.DataFrame(df.drop("Outcome", axis=1).mean()).T
 avg_data["Label"] = "Average"
@@ -67,11 +67,12 @@ st.bar_chart(compare_df.T)
 # --- Model selection ---
 model_choice = st.sidebar.selectbox(
     "Choose Classifier",
-    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
+    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN"),
+    key="model_choice"
 )
 
 if model_choice == "Logistic Regression":
-    option = st.sidebar.selectbox("Model Style", ["Simple", "Balanced", "Flexible"])
+    option = st.sidebar.selectbox("Model Style", ["Simple", "Balanced", "Flexible"], key="log_reg_style")
     if option == "Simple":
         model = LogisticRegression(C=0.5, max_iter=100)
     elif option == "Balanced":
@@ -80,7 +81,7 @@ if model_choice == "Logistic Regression":
         model = LogisticRegression(C=2.0, max_iter=300)
 
 elif model_choice == "Decision Tree":
-    option = st.sidebar.selectbox("Tree Style", ["Shallow", "Medium", "Deep"])
+    option = st.sidebar.selectbox("Tree Style", ["Shallow", "Medium", "Deep"], key="tree_style")
     if option == "Shallow":
         model = DecisionTreeClassifier(max_depth=3)
     elif option == "Medium":
@@ -89,7 +90,7 @@ elif model_choice == "Decision Tree":
         model = DecisionTreeClassifier(max_depth=None)
 
 elif model_choice == "Random Forest":
-    option = st.sidebar.selectbox("Forest Style", ["Small", "Standard", "Large"])
+    option = st.sidebar.selectbox("Forest Style", ["Small", "Standard", "Large"], key="forest_style")
     if option == "Small":
         model = RandomForestClassifier(n_estimators=50, max_depth=5)
     elif option == "Standard":
@@ -98,7 +99,7 @@ elif model_choice == "Random Forest":
         model = RandomForestClassifier(n_estimators=200, max_depth=15)
 
 elif model_choice == "SVM":
-    option = st.sidebar.selectbox("SVM Style", ["Strict", "Balanced", "Flexible"])
+    option = st.sidebar.selectbox("SVM Style", ["Strict", "Balanced", "Flexible"], key="svm_style")
     if option == "Strict":
         model = SVC(C=0.5, kernel="linear", probability=True)
     elif option == "Balanced":
@@ -107,7 +108,7 @@ elif model_choice == "SVM":
         model = SVC(C=2.0, kernel="poly", probability=True)
 
 elif model_choice == "KNN":
-    option = st.sidebar.selectbox("KNN Style", ["Very Sensitive", "Moderate", "Smooth"])
+    option = st.sidebar.selectbox("KNN Style", ["Very Sensitive", "Moderate", "Smooth"], key="knn_style")
     if option == "Very Sensitive":
         model = KNeighborsClassifier(n_neighbors=3)
     elif option == "Moderate":
@@ -207,80 +208,6 @@ for name, m in models.items():
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
 
 
-user_data_vis = user_data.copy()   # safe copy for charts
-user_data_vis["Label"] = "You"
-
-compare_df = pd.concat([avg_data, user_data_vis])
-compare_df = compare_df.set_index("Label")
-
-st.bar_chart(compare_df.T)
-
-# Model selection
-model_choice = st.sidebar.selectbox(
-    "Choose Classifier",
-    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
-)
-
-# Beginner-friendly tuning options
-if model_choice == "Logistic Regression":
-    option = st.sidebar.selectbox("Model Style", ["Simple", "Balanced", "Flexible"])
-    if option == "Simple":
-        model = LogisticRegression(C=0.5, max_iter=100)
-    elif option == "Balanced":
-        model = LogisticRegression(C=1.0, max_iter=200)
-    else:  # Flexible
-        model = LogisticRegression(C=2.0, max_iter=300)
-
-elif model_choice == "Decision Tree":
-    option = st.sidebar.selectbox("Tree Style", ["Shallow", "Medium", "Deep"])
-    if option == "Shallow":
-        model = DecisionTreeClassifier(max_depth=3)
-    elif option == "Medium":
-        model = DecisionTreeClassifier(max_depth=6)
-    else:  # Deep
-        model = DecisionTreeClassifier(max_depth=None)
-
-elif model_choice == "Random Forest":
-    option = st.sidebar.selectbox("Forest Style", ["Small", "Standard", "Large"])
-    if option == "Small":
-        model = RandomForestClassifier(n_estimators=50, max_depth=5)
-    elif option == "Standard":
-        model = RandomForestClassifier(n_estimators=100, max_depth=10)
-    else:  # Large
-        model = RandomForestClassifier(n_estimators=200, max_depth=15)
-
-elif model_choice == "SVM":
-    option = st.sidebar.selectbox("SVM Style", ["Strict", "Balanced", "Flexible"])
-    if option == "Strict":
-        model = SVC(C=0.5, kernel="linear")
-    elif option == "Balanced":
-        model = SVC(C=1.0, kernel="rbf")
-    else:  # Flexible
-        model = SVC(C=2.0, kernel="poly")
-
-elif model_choice == "KNN":
-    option = st.sidebar.selectbox("KNN Style", ["Very Sensitive", "Moderate", "Smooth"])
-    if option == "Very Sensitive":
-        model = KNeighborsClassifier(n_neighbors=3)
-    elif option == "Moderate":
-        model = KNeighborsClassifier(n_neighbors=7)
-    else:  # Smooth
-        model = KNeighborsClassifier(n_neighbors=12)
-
-# Train & Predict
-model.fit(x_train, y_train)
-accuracy = accuracy_score(y_test, model.predict(x_test))
-
-st.subheader(f'Model Accuracy ({model_choice}):')
-st.write(f"{accuracy * 100:.2f}%")
-
-user_result = model.predict(user_data)
-
-st.subheader('Your Report:')
-if user_result[0] == 0:
-    st.success('You Are Healthy ✅')
-else:
-    st.error('You Are Not Healthy ⚠️')
 
 
 
