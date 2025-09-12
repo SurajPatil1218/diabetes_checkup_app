@@ -14,7 +14,7 @@ import io
 # Load Data
 df = pd.read_csv("diabetes.csv")
 
-st.title('🩺 Diabetes Checkup')
+st.title('🩺 Diabetes Prediction ')
 
 st.subheader('Training Data Overview')
 st.write(df.describe())
@@ -162,6 +162,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
