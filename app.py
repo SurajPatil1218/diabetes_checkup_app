@@ -128,14 +128,6 @@ col1.metric("Model Accuracy", f"{accuracy*100:.2f}%")
 st.subheader("Classification Report")
 st.text(classification_report(y_test, model.predict(x_test)))
 
-# 🔹 Feature Importance (for tree-based models)
-if hasattr(model, "feature_importances_"):
-    st.subheader("Feature Importance")
-    importance = pd.DataFrame({
-        "Feature": x.columns,
-        "Importance": model.feature_importances_
-    }).sort_values(by="Importance", ascending=False)
-    st.bar_chart(importance.set_index("Feature"))
 
 # 🔹 Personalized Health Insights
 st.subheader("Health Insights")
@@ -170,6 +162,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
