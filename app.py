@@ -51,7 +51,7 @@ def user_report():
 user_data = user_report()
 
 # --- Dynamic Visualization (Dataset vs Your Input) ---
-st.subheader("📊 Dataset Average vs Your Data")
+st.subheader(" Dataset Average vs Your Data")
 
 avg_data = pd.DataFrame(df.drop("Outcome", axis=1).mean()).T
 avg_data["Label"] = "Average"
@@ -126,14 +126,6 @@ col1.metric("Model Accuracy", f"{accuracy*100:.2f}%")
 col2.metric("Your Glucose", user_data["Glucose"][0])
 col3.metric("Your BMI", user_data["BMI"][0])
 
-# 🔹 Confusion Matrix
-st.subheader("Confusion Matrix")
-cm = confusion_matrix(y_test, model.predict(x_test))
-fig, ax = plt.subplots()
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
-ax.set_xlabel("Predicted")
-ax.set_ylabel("Actual")
-st.pyplot(fig)
 
 # 🔹 Classification Report
 st.subheader("Classification Report")
@@ -182,16 +174,6 @@ if user_result[0] == 0:
 else:
     st.error('You Are Not Healthy ⚠️')
 
-# 🔹 Downloadable Report
-result_text = f"""
-Model: {model_choice}
-Accuracy: {accuracy*100:.2f}%
-Prediction: {"Not Healthy ⚠️" if user_result[0]==1 else "Healthy ✅"}
-"""
-buffer = io.BytesIO()
-buffer.write(result_text.encode())
-st.download_button("Download Report", buffer, file_name="diabetes_report.txt")
-
 # --- Model Comparison Dashboard ---
 st.subheader("Model Comparison (Accuracy Scores)")
 models = {
@@ -206,6 +188,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
