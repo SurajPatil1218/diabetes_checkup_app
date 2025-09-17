@@ -47,7 +47,7 @@ def user_report():
     }
     return pd.DataFrame(user_report, index=[0])
 
-# ✅ Create user_data for prediction
+#  Create user_data for prediction
 user_data = user_report()
 
 # --- Dynamic Visualization (Dataset vs Your Input) ---
@@ -64,20 +64,9 @@ compare_df = compare_df.set_index("Label")
 
 st.bar_chart(compare_df.T)
 
-# --- Model selection ---
-model_choice = st.sidebar.selectbox(
-    "Choose Classifier",
-    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN"),
-    key="model_choice"
-)
 
-# Model selection
-model_choice = st.sidebar.selectbox(
-    "Choose Classifier",
-    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
-)
 
-# Only 2 options: Default vs Tuning
+# Only Default vs Tuning
 option = st.sidebar.selectbox("Model Mode", ["Default", "Tuning"])
 
 if model_choice == "Logistic Regression":
@@ -169,6 +158,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
