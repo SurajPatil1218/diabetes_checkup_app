@@ -77,10 +77,39 @@ model_choice = st.sidebar.selectbox(
     ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
 )
 
-# Beginner-friendly tuning options
+# Only 2 options: Default vs Tuning
+option = st.sidebar.selectbox("Model Mode", ["Default", "Tuning"])
+
 if model_choice == "Logistic Regression":
-    option = st.sidebar.selectbox("Model Style", ["Simple", "Balanced", "Flexible"])
-    ...
+    if option == "Default":
+        model = LogisticRegression(max_iter=200)
+    else:  # Tuning
+        model = LogisticRegression(C=2.0, solver="liblinear", max_iter=500)
+
+elif model_choice == "Decision Tree":
+    if option == "Default":
+        model = DecisionTreeClassifier(random_state=0)
+    else:  # Tuning
+        model = DecisionTreeClassifier(max_depth=6, min_samples_split=4, random_state=0)
+
+elif model_choice == "Random Forest":
+    if option == "Default":
+        model = RandomForestClassifier(random_state=0)
+    else:  # Tuning
+        model = RandomForestClassifier(n_estimators=200, max_depth=12, min_samples_split=3, random_state=0)
+
+elif model_choice == "SVM":
+    if option == "Default":
+        model = SVC()
+    else:  # Tuning
+        model = SVC(C=2.0, kernel="rbf", gamma="scale", probability=True)
+
+elif model_choice == "KNN":
+    if option == "Default":
+        model = KNeighborsClassifier()
+    else:  # Tuning
+        model = KNeighborsClassifier(n_neighbors=5, weights="distance")
+
 
 
 # --- Train & Predict ---
@@ -140,6 +169,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
