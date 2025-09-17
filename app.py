@@ -71,50 +71,17 @@ model_choice = st.sidebar.selectbox(
     key="model_choice"
 )
 
+# Model selection
+model_choice = st.sidebar.selectbox(
+    "Choose Classifier",
+    ("Logistic Regression", "Decision Tree", "Random Forest", "SVM", "KNN")
+)
+
+# Beginner-friendly tuning options
 if model_choice == "Logistic Regression":
-    option = st.sidebar.selectbox("Model Style", ["Simple", "Balanced", "Flexible"], key="log_reg_style")
-    if option == "Simple":
-        model = LogisticRegression(C=0.5, max_iter=100)
-    elif option == "Balanced":
-        model = LogisticRegression(C=1.0, max_iter=200)
-    else:
-        model = LogisticRegression(C=2.0, max_iter=300)
+    option = st.sidebar.selectbox("Model Style", ["Simple", "Balanced", "Flexible"])
+    ...
 
-elif model_choice == "Decision Tree":
-    option = st.sidebar.selectbox("Tree Style", ["Shallow", "Medium", "Deep"], key="tree_style")
-    if option == "Shallow":
-        model = DecisionTreeClassifier(max_depth=3)
-    elif option == "Medium":
-        model = DecisionTreeClassifier(max_depth=6)
-    else:
-        model = DecisionTreeClassifier(max_depth=None)
-
-elif model_choice == "Random Forest":
-    option = st.sidebar.selectbox("Forest Style", ["Small", "Standard", "Large"], key="forest_style")
-    if option == "Small":
-        model = RandomForestClassifier(n_estimators=50, max_depth=5)
-    elif option == "Standard":
-        model = RandomForestClassifier(n_estimators=100, max_depth=10)
-    else:
-        model = RandomForestClassifier(n_estimators=200, max_depth=15)
-
-elif model_choice == "SVM":
-    option = st.sidebar.selectbox("SVM Style", ["Strict", "Balanced", "Flexible"], key="svm_style")
-    if option == "Strict":
-        model = SVC(C=0.5, kernel="linear", probability=True)
-    elif option == "Balanced":
-        model = SVC(C=1.0, kernel="rbf", probability=True)
-    else:
-        model = SVC(C=2.0, kernel="poly", probability=True)
-
-elif model_choice == "KNN":
-    option = st.sidebar.selectbox("KNN Style", ["Very Sensitive", "Moderate", "Smooth"], key="knn_style")
-    if option == "Very Sensitive":
-        model = KNeighborsClassifier(n_neighbors=3)
-    elif option == "Moderate":
-        model = KNeighborsClassifier(n_neighbors=7)
-    else:
-        model = KNeighborsClassifier(n_neighbors=12)
 
 # --- Train & Predict ---
 model.fit(x_train, y_train)
@@ -173,6 +140,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
