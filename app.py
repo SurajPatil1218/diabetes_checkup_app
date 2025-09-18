@@ -112,8 +112,10 @@ elif model_choice == "KNN":
 # --- Train & Predict ---
 model.fit(x_train, y_train)
 accuracy = accuracy_score(y_test, model.predict(x_test))
-st.info("ℹ️ Note: Accuracy may decrease after tuning because some settings make the model simpler or more strict. Default values can sometimes perform better.")
-
+# Show note only for Logistic Regression & Decision Tree
+if model_choice in ["Logistic Regression", "Decision Tree"]:
+    st.info("ℹ️ Note: Accuracy may decrease after tuning because some settings make the model simpler or more strict. "
+            "Default values can sometimes perform better.")
 
 # 🔹 Show Metrics Dashboard
 col1, col2, col3 = st.columns(3)
@@ -168,6 +170,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
