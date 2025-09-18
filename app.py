@@ -1,3 +1,5 @@
+st.set_page_config(page_title="🩺 Diabetes Prediction Dashboard", layout="wide")
+
 import streamlit as st
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, roc_curve, auc
@@ -170,6 +172,7 @@ for name, m in models.items():
     m.fit(x_train, y_train)
     accuracy_scores[name] = accuracy_score(y_test, m.predict(x_test))
 st.bar_chart(pd.DataFrame.from_dict(accuracy_scores, orient='index', columns=['Accuracy']))
+
 
 
 
